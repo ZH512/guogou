@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.ShoppingCollectMapper">
+  <select id="selectByExample" resultType="com.neu.vo.ShoppingCollect">
+    select
+      id,
+      add_time addTime,
+      deleted,
+      id,
+      type,
+      update_time updateTime,
+      user_id userId,
+      value_id valueId
+    from shopping_collect
+    <where>
+      deleted = 0
+      <if test="userId != null and userId != ''">
+        and user_id = #{userId}
+      </if>
+      <if test="valueId != null and valueId != ''">
+        and value_id = #{valueId}
+      </if>
+    </where>
+  </select>
+</mapper>

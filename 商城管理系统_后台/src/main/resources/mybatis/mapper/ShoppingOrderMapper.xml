@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.ShoppingOrderMapper">
+    <select id="countByExample" resultType="java.lang.Long">
+        select count(id) from shopping_order where deleted=0
+    </select>
+<select id="selectByExample" resultType="com.neu.domain.ShoppingOrder">
+    select
+      id ,
+      user_id userId,
+      order_sn orderSn,
+      order_status orderStatus,
+      consignee,
+      mobile,
+      address,
+      message,
+      goods_price goodsPrice,
+      freight_price freightPrice,
+      coupon_price couponPrice,
+      integral_price integralPrice,
+      groupon_price grouponPrice,
+      order_price orderPrice,
+      actual_price actualPrice,
+      pay_id payId,
+      pay_time payTime,
+      ship_sn shipSn,
+      ship_channel shipChannel,
+      ship_time shipTime,
+      confirm_time confirmTime,
+      comments,
+      end_time endTime,
+      add_time addTime,
+      update_time updateTime,
+      deleted
+     from shopping_order
+  <where>
+    <if test="userId!=null and userId!=''">
+        and  user_id like concat('%',#{userId},'%')
+    </if>
+      <if test="orderSn!=null and orderSn!=''">
+          and  order_sn like concat('%',#{orderSn},'%')
+      </if>
+      <if test="orderStatus!=null and orderStatus!=''">
+          and  order_status like concat('%',#{orderStatus},'%')
+      </if>
+    and deleted=0
+  </where>
+</select>
+  <update id="updateAddByExample">
+     update shopping_order set
+    order_status='203'
+    where id=#{id}
+  </update>
+  <update id="updateShipByExample">
+    update shopping_order set
+    order_status='301'
+    where id=#{id}
+  </update>
+  <update id="updateShipExample">
+     update shopping_order_goods set
+    number=(number-1)
+    where id=#{id}
+  </update>
+  <select id="detail" resultType="com.neu.domain.ShoppingOrder">
+    select
+      id ,
+      user_id userId,
+      order_sn orderSn,
+      order_status orderStatus,
+      consignee,
+      mobile,
+      address,
+      message,
+      goods_price goodsPrice,
+      freight_price freightPrice,
+      coupon_price couponPrice,
+      integral_price integralPrice,
+      groupon_price grouponPrice,
+      order_price orderPrice,
+      actual_price actualPrice,
+      pay_id payId,
+      pay_time payTime,
+      ship_sn shipSn,
+      ship_channel shipChannel,
+      ship_time shipTime,
+      confirm_time confirmTime,
+      comments,
+      end_time endTime,
+      add_time addTime,
+      update_time updateTime,
+      deleted
+     from shopping_order
+     where id=#{id}
+      and deleted=0
+  </select>
+  <select id="detail2" resultType="com.neu.domain.ShoppingOrder">
+    select
+     *
+     from shopping_order_goods
+     where id=#{id}
+      and deleted=0
+  </select>
+</mapper>

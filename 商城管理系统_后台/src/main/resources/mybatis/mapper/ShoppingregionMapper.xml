@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.ShoppingregionMapper">
+  <!-- 行政区域信息 尹健 -->
+
+  <resultMap id="BaseResultMap" type="com.neu.vo.ShoppingRegion">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="code" jdbcType="INTEGER" property="code" />
+  </resultMap>
+
+  <select id="selectByExample" resultMap="BaseResultMap">
+    select id,pid,`name`,`type`,code from shopping_region
+  </select>
+
+</mapper>

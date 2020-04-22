@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.ShoppingAddressMapper">
+    <select id="selectByExample" resultType="com.neu.vo.ShoppingAddress">
+        select
+            id,
+            user_id userId,
+            `name`,
+            tel,
+            province,
+            city,
+            county,
+            address_detail addressDetail,
+            is_default isDefault
+            from shopping_address
+        <where>
+            <if test="userId!=null and userId!=''">
+                and  user_id like concat('%',#{userId},'%')
+            </if>
+            <if test="name!=null and name!=''">
+                and name = #{name}
+            </if>
+
+        </where>
+    </select>
+</mapper>

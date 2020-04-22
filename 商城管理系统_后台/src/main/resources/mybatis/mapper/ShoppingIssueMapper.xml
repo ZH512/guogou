@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.ShoppingIssueMapper">
+    <resultMap id="BaseResultMap" type="com.neu.vo.ShoppingIssue">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="question" jdbcType="VARCHAR" property="question" />
+        <result column="answer" jdbcType="VARCHAR" property="answer" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+    <sql id="issue_sql">
+        id,question,answer,add_time,update_time,deleted
+    </sql>
+    <select id="selectByExample" resultMap="BaseResultMap">
+        select <include refid="issue_sql"/>
+        from shopping_issue
+        where
+            deleted != 1
+        <if test="question != null">
+            and question like concat("%",#{question},"%")
+        </if>
+        <if test="order != null and sort != null">
+            order by ${sort} ${order}
+        </if>
+        limit  ${(page-1)*limit},#{limit}
+    </select>
+    
+    <insert id="insertSelective">
+        insert into shopping_issue
+        (question,answer,add_time,update_time,deleted)
+        values
+        (#{question},#{answer},now(),now(),0)
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" >
+        update shopping_issue
+        set question = #{question},answer = #{answer}
+        where id =#{id}
+    </update>
+
+    <update id="logicalDeleteByPrimaryKey" >
+        update shopping_issue
+        set deleted = 1
+        where id =#{id}
+    </update>
+</mapper>

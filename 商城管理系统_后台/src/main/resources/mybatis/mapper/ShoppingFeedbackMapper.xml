@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.ShoppingFeedbackMapper">
+    <select id="selectByExample" resultType="com.neu.vo.ShoppingFeedback">
+        select
+        *
+        from shopping_feedback
+        <where>
+            deleted = 0
+            <if test="userId != null and userId != ''">
+                and user_id = #{userId}
+            </if>
+            <if test="username != null and username != ''">
+                and username = #{username}
+            </if>
+
+            order by add_time desc
+        </where>
+    </select>
+</mapper>

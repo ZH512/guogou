@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.ShoppingBrandMapper">
+    <!-- 查询品牌商信息 尹健 -->
+
+    <resultMap id="BaseResult" type="com.neu.vo.ShoppingBrand">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="desc" jdbcType="VARCHAR" property="desc" />
+        <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+        <result column="sort_order" jdbcType="INTEGER" property="sortOrder" />
+        <result column="floor_price" jdbcType="FLOAT" property="floorPrice" />
+        <result column="add_time" jdbcType="VARCHAR" property="addTime" />
+        <result column="update_time" jdbcType="VARCHAR" property="updateTime" />
+        <result column="deleted" jdbcType="INTEGER" property="deleted" />
+    </resultMap>
+
+    <select id="selectByExample" resultMap="BaseResult">
+      select id,`name`,`desc`,pic_url,sort_order,floor_price,add_time,update_time,deleted from shopping_brand
+      where deleted = 0
+      <if test="id != null">
+          and id = #{id}
+      </if>
+      <if test="name != null">
+          and `name` like concat('%',#{name},'%')
+      </if>
+        limit #{pagenum},#{pagesize}
+   </select>
+
+    <insert id="insertselective">
+        <!-- 新增新增品牌商信息 -->
+        insert into shopping_brand(`name`,`desc`,floor_price,add_time,update_time,deleted,pic_url)
+        values(#{name},#{desc},#{floorPrice},now(),now(),0,#{picUrl})
+    </insert>
+
+    <update id="updateByPrimaryKeySelective">
+        <!-- 修改品牌商信息 -->
+        update shopping_brand set `name` = #{name},`desc` = #{desc},floor_price = #{floorPrice},
+        add_time = now(),update_time = now()
+        where id = #{id}
+    </update>
+
+    <update id="logicalDeleteByPrimaryKey">
+        <!-- 删除品牌商信息 -->
+        update shopping_brand set deleted = 1 where id = #{id}
+    </update>
+
+    <select id="gettotal" resultType="java.lang.Integer">
+        <!-- 获取总数 -->
+        select count(*) from shopping_brand where deleted = 0;
+    </select>
+</mapper>

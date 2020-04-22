@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neu.dao.ShoppingAdMapper">
+    <!--auto generated Code-->
+    <resultMap id="AllColumnMap" type="com.neu.domain.ShoppingAd">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="link" property="link"/>
+        <result column="url" property="url"/>
+        <result column="position" property="position"/>
+        <result column="content" property="content"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="enabled" property="enabled"/>
+        <result column="add_time" property="addTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="deleted" property="deleted"/>
+    </resultMap>
+
+    <!--auto generated Code-->
+    <sql id="all_column">
+        `id`,
+        `name`,
+        `link`,
+        `url`,
+        `position`,
+        `content`,
+        `start_time`,
+        `end_time`,
+        `enabled`,
+        `add_time`,
+        `update_time`,
+        `deleted`
+    </sql>
+
+<!--查询分页-->
+     <select id="selectByExample" resultMap="AllColumnMap">
+         select <include refid="all_column"/>
+         from shopping_ad
+     </select>
+<!--    删除-->
+    <update id="logicalDeleteByPrimaryKey">
+        update  shopping_ad set deleted='1' where id=#{id}
+    </update>
+
+<!--    添加-->
+    <insert id="insertSelective">
+        insert  into shopping_ad(
+        `name`,
+        `link`,
+        `url`,
+        `position`,
+        `content`,
+        `start_time`,
+        `end_time`,
+        `enabled`,
+        `add_time`,
+        `update_time`,
+        `deleted`)
+        values (#{name},#{link},#{url},#{position},#{content},
+        now(),now(),0,now(),now(),0)
+    </insert>
+
+<!--    更新-->
+    <update id="updateByPrimaryKeySelective">
+        update
+        shopping_ad set
+        `name` =#{name} ,
+        link=#{link},
+        `url`=#{url},
+        `content`=#{content},
+        `deleted`=#{deleted},
+        `update_time`=now()
+        where  id=#{id}
+    </update>
+</mapper>
+

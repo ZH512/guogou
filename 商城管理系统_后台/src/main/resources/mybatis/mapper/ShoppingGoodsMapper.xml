@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.ShoppingGoodsMapper">
+    <sql id="goods_data">
+        id, goods_sn, `name`, category_id, brand_id, gallery, keywords, brief, is_on_sale,
+    sort_order, pic_url, share_url, is_new, is_hot, unit, counter_price, retail_price, detail,
+    add_time, update_time, deleted
+    </sql>
+    <insert id="addShoppingGoods" parameterType="com.neu.domain.ShoppingGoods">
+        insert into shopping_goods(
+        goods_sn,`name`,category_id,brand_id,gallery,keywords,brief,is_on_sale,
+        sort_order,pic_url,share_url,is_new,is_hot,unit,counter_price,retail_price,
+        add_time,update_time,deleted,detail)
+        values (#{goodsSn},#{name},#{categoryId},#{brandId},#{strGallery},#{keywords},#{brief},
+        #{isOnSale},#{sortOrder},#{picUrl},#{shareUrl},#{isNew},#{isHot},#{unit},#{counterPrice},
+        #{retailPrice},#{addTime},#{updateTime},#{deleted},#{detail})
+    </insert>
+    <insert id="addShoppingGoodsAttribute" parameterType="com.neu.domain.ShoppingGoodsAttribute">
+        insert
+        into shopping_goods_attribute(
+        goods_id,
+        attribute,
+        `value`,
+        add_time,
+        update_time,
+        deleted
+      )
+        values (
+        #{goodsId},
+        #{attribute},
+        #{value},
+        #{addTime},
+        #{updateTime},
+        #{deleted}
+        )
+    </insert>
+    <insert id="addShoppingGoodsProduct" parameterType="com.neu.domain.ShoppingGoodsProduct">
+        insert
+        into shopping_goods_product(
+        goods_id,
+        specifications,
+        price,
+        `number`,
+        url,
+        add_time,
+        update_time,
+        deleted
+        )
+        values (
+        #{goodsId},
+        #{strSpecifications},
+        #{price},
+        #{number},
+        #{url},
+        #{addTime},
+        #{updateTime},
+        #{deleted}
+        )
+    </insert>
+    <insert id="addShoppingGoodsSpecification" parameterType="com.neu.domain.ShoppingGoodsSpecification">
+        insert
+        into shopping_goods_specification(
+        goods_id,
+        specification,
+        `value`,
+        pic_url,
+        add_time,
+        update_time,
+        deleted
+        )
+        values (
+        #{goodsId},
+        #{specification},
+        #{value},
+        #{picUrl},
+        #{addTime},
+        #{updateTime},
+        #{deleted}
+        )
+    </insert>
+    <update id="goodsDeleteByGoodsSn">
+        update shopping_goods sg,
+        shopping_goods_specification sgs,
+        shopping_goods_attribute sga,
+        shopping_goods_product sgp
+        set sg.deleted=1,sgs.deleted=1,sga.deleted=1,sgp.deleted=1
+        where sg.goods_sn=#{goodsSn}
+        and sgs.goods_id=#{goodsSn}
+        and sga.goods_id=#{goodsSn}
+        and sgp.goods_id=#{goodsSn}
+    </update>
+    <update id="updateGoodsSn">
+        update shopping_goods
+        set goods_sn=#{goodsSn}
+        where id=#{id}
+    </update>
+    <update id="updateByIdSelective">
+        update shopping_goods
+        set goods_sn=#{goodsSn},
+        `name`=#{name},
+        category_id=#{categoryId},
+        brand_id=#{brandId},
+        gallery=#{strGallery},
+        keywords=#{keywords},
+        brief=#{brief},
+        is_on_sale=#{isOnSale},
+        sort_order=#{sortOrder},
+        pic_url=#{picUrl},
+        share_url=#{shareUrl},
+        is_new=#{isNew},
+        is_hot=#{isHot},
+        unit=#{unit},
+        counter_price=#{counterPrice},
+        retail_price=#{retailPrice},
+        update_time=#{updateTime},
+        detail=#{detail},
+        deleted=#{deleted}
+        where id=#{id}
+    </update>
+    <update id="deleteByGoodId">
+        update
+        shopping_goods_specification sgs,
+        shopping_goods_attribute sga,
+        shopping_goods_product sgp
+        set sgs.deleted=1,sga.deleted=1,sgp.deleted=1
+        where  sgs.goods_id=#{id}
+        and sga.goods_id=#{id}
+        and sgp.goods_id=#{id}
+    </update>
+    <select id="selectByGoodsSnWithName" parameterType="string" resultType="com.neu.domain.ShoppingGoods">
+    select id,
+    goods_sn as goodsSn,
+    `name`,
+    category_id as categoryId,
+    brand_id as brandId,
+    gallery,
+    keywords,
+    brief,
+    is_on_sale as isOnSale,
+    sort_order as sortOrder,
+    pic_url as picUrl,
+    share_url as shareUrl,
+    is_new as isNew,
+    is_hot as isHot,
+    unit,
+    counter_price as counterPrice,
+    retail_price as retailPrice,
+    detail,
+    add_time as addTime,
+    update_time as updateTime,
+    deleted
+    from shopping_goods
+    where deleted=0
+    <if test="goodsSn!=null and goodsSn!=''">
+      and goods_sn=#{goodsSn}
+    </if>
+    <if test="name!=null and name!=''">
+        and `name` like CONCAT('%',#{name},'%')
+    </if>
+    ORDER BY add_time desc
+    </select>
+    <select id="selectShoppingBrands" resultType="com.neu.vo.ShoppingBrand">
+        select id,
+        `name`,
+        `desc`,
+        pic_url as picUrl,
+        sort_order as sortOrder,
+        floor_price as floorPrice,
+        add_time as addTime,
+        update_time as update_time,
+        deleted
+        from shopping_brand
+        where deleted=0
+    </select>
+    <select id="selectShoppingCategory" resultType="com.neu.vo.ShoppingCategory">
+        select id,
+        `name`,
+        keywords,
+        `desc`,
+        pid,
+        icon_url as iconUrl,
+        pic_url as picUrl,
+        `level`,
+        sort_order as sortOrder,
+        add_time as addTime,
+        update_time as updateTime,
+        deleted
+        from shopping_category
+        where deleted=0
+    </select>
+    <select id="selectShoppingCategoryByPid" resultType="com.neu.vo.ShoppingCategory">
+        select id,
+        `name`,
+        keywords,
+        `desc`,
+        pid,
+        icon_url as iconUrl,
+        pic_url as picUrl,
+        `level`,
+        sort_order as sortOrder,
+        add_time as addTime,
+        update_time as updateTime,
+        deleted
+        from shopping_category
+        where pid=#{pid}
+        and deleted=0
+    </select>
+    <select id="selectGoodsById" resultType="com.neu.domain.ShoppingGoods">
+        select id,
+        goods_sn as goodsSn,
+        `name`,
+        category_id as categoryId,
+        brand_id as brandId,
+        gallery,
+        keywords,
+        brief,
+        is_on_sale as isOnSale,
+        sort_order as sortOrder,
+        pic_url as picUrl,
+        share_url as shareUrl,
+        is_new as isNew,
+        is_hot as isHot,
+        unit,
+        counter_price as counterPrice,
+        retail_price as retailPrice,
+        detail,
+        add_time as addTime,
+        update_time as updateTime,
+        deleted
+        from shopping_goods
+        where id=#{id}
+        and deleted=0
+    </select>
+    <select id="selectGralleryById" resultType="java.lang.String">
+        select gallery from shopping_goods where id=#{id}
+    </select>
+    <select id="selectGoodsByName" resultType="com.neu.domain.ShoppingGoods">
+        select id,
+        goods_sn as goodsSn,
+        `name`,
+        category_id as categoryId,
+        brand_id as brandId,
+        gallery,
+        keywords,
+        brief,
+        is_on_sale as isOnSale,
+        sort_order as sortOrder,
+        pic_url as picUrl,
+        share_url as shareUrl,
+        is_new as isNew,
+        is_hot as isHot,
+        unit,
+        counter_price as counterPrice,
+        retail_price as retailPrice,
+        detail,
+        add_time as addTime,
+        update_time as updateTime,
+        deleted
+        from shopping_goods
+        where  (`name`=#{name} or goods_sn=#{goodsSn})
+        <if test="id!=0">
+            and id!=#{id}
+        </if>
+        and deleted=0
+    </select>
+    <select id="selectGoodsId" resultType="java.lang.Integer">
+        select id from shopping_goods where goods_sn=#{goodsSn} and deleted=0;
+    </select>
+    <select id="selectGoodsProductsById" resultType="com.neu.domain.ShoppingGoodsProduct">
+        select
+        id,
+        goods_id as goodId,
+        specifications,
+        price,
+        `number`,
+        url,
+        add_time as addTime,
+        update_time as updateTime,
+        deleted
+        from shopping_goods_product
+        where goods_id=#{goodid}
+        and deleted=0
+    </select>
+    <select id="selectgoodsAttributesById" resultType="com.neu.domain.ShoppingGoodsAttribute">
+        select
+        id,
+        goods_id as goodId,
+        attribute,
+        `value`,
+        add_time as addTime,
+        update_time as updateTime,
+        deleted
+        from shopping_goods_attribute
+        where goods_id=#{goodid}
+        and deleted=0
+    </select>
+    <select id="selectgoodsSpecificationsById" resultType="com.neu.domain.ShoppingGoodsSpecification">
+        select
+        id,
+        goods_id as goodsId,
+        specification,
+        `value`,
+        pic_url as picUrl,
+        add_time as addTime,
+        update_time as updateTime,
+        deleted
+        from shopping_goods_specification
+        where goods_id=#{goodid}
+        and deleted=0
+    </select>
+    <select id="selectSpecificationsById" resultType="java.lang.String">
+        select specifications from shopping_goods_product where id=#{id}
+    </select>
+    <select id="countByExample" parameterType="com.neu.domain.ShoppingGoodsAttribute" resultType="java.lang.Long">
+        select count(id) from shopping_goods where deleted=0
+    </select>
+    <select id="selectByExampleSelective" resultType="com.neu.domain.ShoppingGoods">
+        select<include refid="goods_data"/> from shopping_goods
+        where deleted = '0'
+        and id  in
+        <foreach item="id" index="index" collection="ids"
+                 open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

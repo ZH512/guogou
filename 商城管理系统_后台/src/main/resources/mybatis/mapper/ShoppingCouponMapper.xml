@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neu.dao.ShoppingCouponMapper">
+    <resultMap id="CouponUserMap" type="com.neu.domain.ShoppingCouponUser">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <id column="user_id" jdbcType="INTEGER" property="userId" />
+        <id column="coupon_id" jdbcType="INTEGER" property="couponId" />
+        <id column="status" jdbcType="INTEGER" property="status" />
+        <id column="used_time" jdbcType="TIMESTAMP" property="usedTime" />
+        <id column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <id column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <id column="order_id" jdbcType="INTEGER" property="orderId" />
+        <id column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <id column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <id column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+    <resultMap id="CouponMap" type="com.neu.domain.ShoppingCoupon">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <id column="name" jdbcType="VARCHAR" property="name" />
+        <id column="desc" jdbcType="VARCHAR" property="desc" />
+        <id column="tag" jdbcType="VARCHAR" property="tag" />
+        <id column="total" jdbcType="INTEGER" property="total" />
+        <id column="discount" jdbcType="DECIMAL" property="discount" />
+        <id column="min" jdbcType="DECIMAL" property="min" />
+        <id column="limit" jdbcType="INTEGER" property="limit" />
+        <id column="type" jdbcType="INTEGER" property="type" />
+        <id column="status" jdbcType="INTEGER" property="status" />
+        <id column="goods_type" jdbcType="INTEGER" property="goodsType" />
+        <id column="goods_value" jdbcType="VARCHAR" property="goodsValue"/>
+        <id column="code" jdbcType="VARCHAR" property="code" />
+        <id column="time_type" jdbcType="INTEGER" property="timeType" />
+        <id column="days" jdbcType="INTEGER" property="days" />
+        <id column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+        <id column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+        <id column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <id column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <id column="deleted" jdbcType="BIT" property="deleted" />
+    </resultMap>
+    <sql id="coupon_sql">
+        `id`,`name`,`desc`,`tag`,`total`,`discount`,`min`,`limit`,`type`,`status`,`goods_type`,`goods_value`,`code`,`time_type`,`days`,`start_time`,`end_time`,
+        `add_time`,`update_time`,`deleted`
+    </sql>
+    <!--    获取优惠券列表总数-->
+    <select id="getTotal" resultType="java.lang.Integer">
+        select COUNT(id) from shopping_coupon
+        where `deleted`!=1
+        <if test="name!=null">
+            and name like concat('%',#{name},'%')
+        </if>
+        <if test="type!=null">
+            and type=#{type}
+        </if>
+        <if test="status!=null">
+            and status=#{status}
+        </if>
+    </select>
+    <!--    分页查询-->
+    <select id="selectByExample" resultMap="CouponMap">
+        select <include refid="coupon_sql" />
+        from shopping_coupon
+        where deleted!=1
+        <if test="name!=null">
+            and name like concat('%',#{name},'%')
+        </if>
+        <if test="type!=null">
+            and type=#{type}
+        </if>
+        <if test="status!=null">
+            and status=#{status}
+        </if>
+        <if test="sort!=null and order!=null">
+            order by ${sort} ${order}
+        </if>
+        limit #{page},#{limit}
+    </select>
+    <!--    获取优惠券详情信息-->
+    <select id="selectByPrimaryKey" resultMap="CouponMap">
+        select <include refid="coupon_sql" />
+        from shopping_coupon
+        where deleted!=1 and id=#{id}
+    </select>
+    <!--    修改优惠券信息-->
+    <update id="updateByPrimaryKeySelective">
+        update shopping_coupon
+        set `name`=#{coupon.name},`desc`=#{coupon.desc},`tag`=#{coupon.tag},`min`=#{coupon.min},`discount`=#{coupon.discount},`limit`=#{coupon.limit},`type`=#{coupon.type},`code`=#{coupon.code},`total`=#{coupon.total},`days`=#{coupon.days},`time_type`=#{coupon.timeType},`start_time`=#{coupon.startTime},`end_time`=#{coupon.endTime},`goods_type`=#{coupon.goodsType},`update_time`=now()
+        where `id`=#{coupon.id}
+    </update>
+    <!--    删除优惠券-->
+    <update id="logicalDeleteByPrimaryKey">
+        update shopping_coupon
+        set `deleted`=1
+        where `id`=#{id}
+    </update>
+    <!--    获取优惠券领取用户列表总数-->
+    <select id="getUserTotal" resultType="java.lang.Integer">
+        select COUNT(id) from shopping_coupon_user
+        where `deleted`!=1 and `coupon_id`=#{couponId}
+        <if test="userId!=null">
+            and `user_id`=#{userId}
+        </if>
+        <if test="status!=null">
+            and `status`=#{status}
+        </if>
+    </select>
+    <!--    获取优惠券领取用户信息-->
+    <select id="selectUserByExample" resultMap="CouponUserMap">
+        select *
+        from shopping_coupon_user
+        where `deleted`!=1 and `coupon_id`=#{couponId}
+        <if test="userId!=null">
+            and `user_id`=#{userId}
+        </if>
+        <if test="status!=null">
+            and `status`=#{status}
+        </if>
+        <if test="sort!=null and order!=null">
+            order by ${sort} ${order}
+        </if>
+        limit #{page},#{limit}
+    </select>
+    <insert id="insertSelective" >
+        insert into shopping_coupon(`name`,`desc`,`tag`,`total`,`discount`,`min`,`limit`,`type`,`status`,`goods_type`,`goods_value`,`code`,`time_type`,`days`,`start_time`,`end_time`,
+        `add_time`,`update_time`,`deleted`)
+        VALUES (#{coupon.name},#{coupon.desc},#{coupon.tag},#{coupon.total},#{coupon.discount},#{coupon.min},#{coupon.limit},
+        #{coupon.type},0,#{coupon.goodsType},#{coupon.goodsValue},#{coupon.code},#{coupon.timeType},#{coupon.days},
+        #{coupon.startTime},#{coupon.endTime},NOW(),NOW(),0 );
+    </insert>
+</mapper>

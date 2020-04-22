@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.ShoppingUserlistMapper">
+<select id="selectByExampleWithBLOBs" resultType="com.neu.vo.ShoppingUserList">
+         select id,username, mobile ,gender, birthday, user_level , status
+ from shopping_user
+  <where>
+      <if test="mobile!=null and mobile!=''">
+          and  mobile like concat('%',#{mobile},'%')
+      </if>
+      <if test="username!=null and username!=''">
+          and username =#{username}
+      </if>
+
+  </where>
+</select>
+</mapper>

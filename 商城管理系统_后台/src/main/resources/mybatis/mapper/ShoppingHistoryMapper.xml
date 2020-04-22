@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neu.dao.ShoppingHistoryMapper">
+  <select id="selectByExample" resultType="com.neu.vo.ShoppingSearchHistory">
+    select
+      id,
+      add_time addTime,
+      deleted,
+      id,
+      update_time updateTime,
+      user_id userId,
+      `keyword`,
+      `from`
+    from shopping_search_history
+    <where>
+      deleted = 0
+      <if test="userId != null and userId != ''">
+        and user_id = #{userId}
+      </if>
+      <if test="keyword != null and keyword != ''">
+        and keyword = #{keyword}
+      </if>
+        order by add_time desc
+    </where>
+  </select>
+</mapper>
